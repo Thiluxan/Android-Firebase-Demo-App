@@ -1,5 +1,6 @@
 package com.example.firebasedemo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -19,23 +20,16 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.addData).setOnClickListener {
             var name = findViewById<EditText>(R.id.name).text.toString()
-            FirebaseDatabase.getInstance().getReference("Name").setValue(name).addOnCompleteListener {
+            var country = findViewById<EditText>(R.id.country).text.toString()
+            FirebaseDatabase.getInstance().getReference("Players").push().setValue(Player(name,country)).addOnCompleteListener {
                 Toast.makeText(this,"Data added successfully",Toast.LENGTH_SHORT).show()
+                findViewById<EditText>(R.id.name).clearComposingText()
             }
         }
 
         findViewById<Button>(R.id.viewData).setOnClickListener {
-            var output = findViewById<TextView>(R.id.output)
-            FirebaseDatabase.getInstance().getReference("Name").addValueEventListener(object : ValueEventListener{
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@MainActivity,"Failed to load database",Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    output.text = snapshot.getValue().toString()
-                }
-
-            })
+            var intent = Intent(this,PlayerActivity::class.java)
+            startActivity(intent)
         }
     }
 }
